@@ -1,0 +1,109 @@
+# Configuration file for Wall Damage Analyzer
+
+# Project settings
+project:
+  name: "Wall Damage Analyzer"
+  version: "1.0.0"
+  description: "IA per analizzare danni su pareti intonacate"
+
+# Input/Output paths
+paths:
+  input_images: "data/input/"
+  output_images: "data/output/images/"
+  output_heatmaps: "data/output/heatmaps/"
+  output_reports: "data/output/reports/"
+  models: "models/"
+  results_db: "data/output/results.db"
+
+# Image processing parameters
+image_processing:
+  resize_width: 1024
+  resize_height: 768
+  preprocessing:
+    contrast_enhancement: true
+    histogram_equalization: true
+    noise_reduction: true
+    blur_kernel: 5
+
+# Damage detection parameters
+damage_detection:
+  confidence_threshold: 0.6
+  min_area_pixels: 100
+  max_area_pixels: 500000
+  
+  # Damage types with color mappings (BGR format)
+  damage_types:
+    crepe_fessure:
+      color: [0, 0, 255]        # Rosso
+      description: "Crepe e fessure"
+      min_width: 1
+      max_width: 50
+    
+    distacchi:
+      color: [0, 165, 255]      # Arancione
+      description: "Distacchi intonaco"
+      min_width: 5
+      max_width: 200
+    
+    umidita_efflorescenza:
+      color: [0, 255, 255]      # Giallo
+      description: "Umidità e efflorescenza"
+      min_width: 10
+      max_width: 300
+    
+    macchie_muffa:
+      color: [0, 128, 0]        # Verde scuro
+      description: "Macchie e muffa"
+      min_width: 5
+      max_width: 250
+    
+    intonaco_mancante:
+      color: [255, 0, 0]        # Blu
+      description: "Aree verniciate/intonaco mancante"
+      min_width: 10
+      max_width: 400
+    
+    vernice_degradata:
+      color: [139, 0, 139]      # Magenta scuro
+      description: "Vernice degradata"
+      min_width: 5
+      max_width: 300
+
+# Heatmap parameters
+heatmap:
+  colormap: "jet"
+  intensity_threshold: 0.3
+  blur_sigma: 15
+
+# Output formats
+output:
+  formats:
+    - "image_with_contours"
+    - "heatmap"
+    - "csv_report"
+    - "json_report"
+  include_statistics: true
+  include_coordinates: true
+  include_severity_score: true
+
+# Model parameters
+model:
+  type: "segmentation"
+  backbone: "resnet50"
+  pretrained: true
+  input_channels: 3
+  epochs: 50
+  batch_size: 16
+  learning_rate: 0.0001
+
+# Database
+database:
+  type: "sqlite"
+  path: "data/output/results.db"
+  auto_create: true
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/wall_analyzer.log"
